@@ -1,5 +1,6 @@
 package com.upversionlab.controller;
 
+import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Ingredient;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,10 @@ import java.util.Map;
  * Created by rborcat on 1/3/2017.
  */
 @RestController
+@RequestMapping("/ingredients")
 public class IngredientController {
     private Map<Integer, Ingredient> ingredients = new HashMap<>();
+    private static final String INGREDIENT_RESOURCE_NAME = Ingredient.class.getSimpleName();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Ingredient> getIngredients() {
@@ -20,8 +23,8 @@ public class IngredientController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Ingredient getIngredient(@RequestParam int id) {
-        return ingredients.get(id);
+    public Ingredient getIngredient(@PathVariable int id) {
+        return getIngredientById(id);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -31,13 +34,22 @@ public class IngredientController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateIngredient(@RequestParam int id, @RequestBody Ingredient newIngredient) {
-        Ingredient ingredient = ingredients.get(id);
+    public void updateIngredient(@PathVariable int id, @RequestBody Ingredient newIngredient) {
+        Ingredient ingredient = getIngredientById(id);
         ingredient.update(newIngredient);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteIngredient(@RequestParam int id) {
-        ingredients.remove(id);
+    public void deleteIngredient(@PathVariable int id) {
+        ingredients.remove(getIngredientById(id));
+    }
+
+    private Ingredient getIngredientById(int id) {
+        Ingredient ingredient = ingredients.get(id);
+        if (ingredient != null) {
+            return ingredient;
+        } else {
+            throw new EntityNotFoundException(INGREDIENT_RESOURCE_NAME + " " + id + " not found!");
+        }
     }
 }

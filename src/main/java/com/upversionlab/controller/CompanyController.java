@@ -1,5 +1,6 @@
 package com.upversionlab.controller;
 
+import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Company;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 @RequestMapping("/companies")
 public class CompanyController {
     private Map<Integer, Company> companies = new HashMap<>();
+    private static final String COMPANY_RESOURCE_NAME = Company.class.getSimpleName();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Company> getCompanies() {
@@ -21,8 +23,8 @@ public class CompanyController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Company getCompany(@RequestParam int id) {
-        return companies.get(id);
+    public Company getCompany(@PathVariable int id) {
+        return getCompanyById(id);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -32,13 +34,22 @@ public class CompanyController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateCompany(@RequestParam int id, @RequestBody Company newCompany) {
-        Company company = companies.get(id);
+    public void updateCompany(@PathVariable int id, @RequestBody Company newCompany) {
+        Company company = getCompanyById(id);
         company.update(newCompany);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteCompany(@RequestParam int id) {
-        companies.remove(id);
+    public void deleteCompany(@PathVariable int id) {
+        companies.remove(getCompanyById(id));
+    }
+
+    private Company getCompanyById(int id) {
+        Company company = companies.get(id);
+        if (company != null) {
+            return company;
+        } else {
+            throw new EntityNotFoundException(COMPANY_RESOURCE_NAME + " " + id + " not found!");
+        }
     }
 }

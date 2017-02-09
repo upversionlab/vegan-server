@@ -1,5 +1,6 @@
 package com.upversionlab.controller;
 
+import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Product;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 @RequestMapping("/products")
 public class ProductController {
     private Map<Integer, Product> products = new HashMap<>();
+    private static final String PRODUCT_RESOURCE_NAME = Product.class.getSimpleName();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Product> getProducts() {
@@ -21,8 +23,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Product getProduct(@RequestParam int id) {
-        return products.get(id);
+    public Product getProduct(@PathVariable int id) {
+        return getProductById(id);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -32,13 +34,22 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateProducts(@RequestParam int id, @RequestBody Product newProduct) {
-        Product product = products.get(id);
+    public void updateProducts(@PathVariable int id, @RequestBody Product newProduct) {
+        Product product = getProductById(id);
         product.update(newProduct);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteProduct(@RequestParam int id) {
-        products.remove(id);
+    public void deleteProduct(@PathVariable int id) {
+        products.remove(getProductById(id));
+    }
+
+    private Product getProductById(int id) {
+        Product product = products.get(id);
+        if (product != null) {
+            return product;
+        } else {
+            throw new EntityNotFoundException(PRODUCT_RESOURCE_NAME + " " + id + " not found!");
+        }
     }
 }
