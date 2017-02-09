@@ -14,8 +14,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/ingredients")
 public class IngredientController {
-    private Map<Integer, Ingredient> ingredients = new HashMap<>();
     private static final String INGREDIENT_RESOURCE_NAME = Ingredient.class.getSimpleName();
+
+    private Map<Integer, Ingredient> ingredients = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Ingredient> getIngredients() {

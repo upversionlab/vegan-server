@@ -14,8 +14,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private Map<Integer, Product> products = new HashMap<>();
     private static final String PRODUCT_RESOURCE_NAME = Product.class.getSimpleName();
+
+    private Map<Integer, Product> products = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Product> getProducts() {

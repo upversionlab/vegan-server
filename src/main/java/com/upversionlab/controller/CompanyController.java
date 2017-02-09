@@ -14,8 +14,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/companies")
 public class CompanyController {
-    private Map<Integer, Company> companies = new HashMap<>();
     private static final String COMPANY_RESOURCE_NAME = Company.class.getSimpleName();
+
+    private Map<Integer, Company> companies = new HashMap<>();
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Company> getCompanies() {
