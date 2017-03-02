@@ -57,13 +57,12 @@ public class Ingredient {
 
         Ingredient ingredient = (Ingredient) obj;
         return Objects.equals(getId(), ingredient.getId())
-                && Objects.equals(isVegan(), ingredient.isVegan())
-                && Objects.equals(getProduct(), ingredient.getProduct());
+                && Objects.equals(isVegan(), ingredient.isVegan());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), isVegan(), getProduct());
+        return Objects.hash(getId(), isVegan());
     }
 
     @Override
@@ -71,7 +70,6 @@ public class Ingredient {
         return MoreObjects.toStringHelper(this)
                 .add("id", getId())
                 .add("vegan", isVegan())
-                .add("product", getProduct())
                 .toString();
     }
 }

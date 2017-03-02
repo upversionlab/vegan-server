@@ -59,13 +59,12 @@ public class Company {
 
         Company company = (Company) obj;
         return Objects.equals(getId(), company.getId())
-                && Objects.equals(isVegan(), company.isVegan())
-                && Objects.equals(getProducts(), company.getProducts());
+                && Objects.equals(isVegan(), company.isVegan());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), isVegan(), getProducts());
+        return Objects.hash(getId(), isVegan());
     }
 
     @Override
@@ -73,7 +72,6 @@ public class Company {
         return MoreObjects.toStringHelper(this)
                 .add("id", getId())
                 .add("vegan", isVegan())
-                .add("products", getProducts())
                 .toString();
     }
 }
