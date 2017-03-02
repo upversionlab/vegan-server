@@ -34,15 +34,17 @@ public class CompanyController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void createCompany(@RequestBody Company company) {
+    public Company createCompany(@RequestBody Company company) {
         company.setId(companies.size());
         companies.put(company.getId(), company);
+        return company;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateCompany(@PathVariable int id, @RequestBody Company newCompany) {
+    public Company updateCompany(@PathVariable int id, @RequestBody Company newCompany) {
         Company company = getCompanyById(id);
         company.update(newCompany);
+        return company;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

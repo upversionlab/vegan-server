@@ -34,15 +34,17 @@ public class IngredientController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void createIngredient(@RequestBody Ingredient ingredient) {
+    public Ingredient createIngredient(@RequestBody Ingredient ingredient) {
         ingredient.setId(ingredients.size());
         ingredients.put(ingredient.getId(), ingredient);
+        return ingredient;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateIngredient(@PathVariable int id, @RequestBody Ingredient newIngredient) {
+    public Ingredient updateIngredient(@PathVariable int id, @RequestBody Ingredient newIngredient) {
         Ingredient ingredient = getIngredientById(id);
         ingredient.update(newIngredient);
+        return ingredient;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

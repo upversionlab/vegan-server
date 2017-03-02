@@ -34,15 +34,17 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void createProduct(@RequestBody Product product) {
+    public Product createProduct(@RequestBody Product product) {
         product.setId(products.size());
         products.put(product.getId(), product);
+        return product;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateProducts(@PathVariable int id, @RequestBody Product newProduct) {
+    public Product updateProducts(@PathVariable int id, @RequestBody Product newProduct) {
         Product product = getProductById(id);
         product.update(newProduct);
+        return product;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
