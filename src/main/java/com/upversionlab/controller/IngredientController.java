@@ -2,10 +2,10 @@ package com.upversionlab.controller;
 
 import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Ingredient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +16,12 @@ import java.util.Map;
 public class IngredientController {
     private static final String INGREDIENT_RESOURCE_NAME = Ingredient.class.getSimpleName();
 
-    private Map<Integer, Ingredient> ingredients = new HashMap<>();
+    private final Map<Integer, Ingredient> ingredients;
+
+    @Autowired
+    public IngredientController(Map<Integer, Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Ingredient> getIngredients() {

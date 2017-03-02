@@ -2,10 +2,10 @@ package com.upversionlab.controller;
 
 import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Company;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +16,12 @@ import java.util.Map;
 public class CompanyController {
     private static final String COMPANY_RESOURCE_NAME = Company.class.getSimpleName();
 
-    private Map<Integer, Company> companies = new HashMap<>();
+    private final Map<Integer, Company> companies;
+
+    @Autowired
+    public CompanyController(Map<Integer, Company> companies) {
+        this.companies = companies;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Company> getCompanies() {
