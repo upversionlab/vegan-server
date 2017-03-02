@@ -2,6 +2,7 @@ package com.upversionlab.model;
 
 import com.google.common.base.MoreObjects;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,7 +12,7 @@ public class Ingredient {
 
     private int id;
     private Boolean vegan;
-    private Product product;
+    private List<Product> products;
 
     public Ingredient() {}
 
@@ -31,12 +32,12 @@ public class Ingredient {
         this.vegan = vegan;
     }
 
-    public Product getProduct() {
-        return product;
+    public List<Product> getProducts() {
+        return products;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public void update(Ingredient newIngredient) {

@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,32 +37,16 @@ public class IngredientControllerTest {
     private static final Ingredient INGREDIENT = new Ingredient();
     private static final Integer INGREDIENT_ID = 1;
     private static final Boolean INGREDIENT_VEGAN = true;
-    private static final Product INGREDIENT_PRODUCT = createProduct();
+    private static final List<Product> INGREDIENT_PRODUCT = Lists.emptyList();
 
     private static final Ingredient OTHER_INGREDIENT = new Ingredient();
     private static final Integer OTHER_INGREDIENT_ID = 2;
     private static final Boolean OTHER_INGREDIENT_VEGAN = false;
-    private static final Product OTHER_INGREDIENT_PRODUCT = createProduct();
+    private static final List<Product> OTHER_INGREDIENT_PRODUCT = Lists.emptyList();
 
     private static final Ingredient UPDATED_INGREDIENT = new Ingredient();
     private static final Boolean UPDATED_INGREDIENT_VEGAN = false;
-    private static final Product UPDATED_INGREDIENT_PRODUCT = createProduct();
-
-    private static Product createProduct() {
-        Product product = new Product();
-        product.setId(0);
-        product.setCompany(createCompany());
-        product.setIngredients(Lists.emptyList());
-        return product;
-    }
-
-    private static Company createCompany() {
-        Company company = new Company();
-        company.setId(0);
-        company.setVegan(true);
-        company.setProducts(Lists.emptyList());
-        return company;
-    }
+    private static final List<Product> UPDATED_INGREDIENT_PRODUCT = Lists.emptyList();
 
     @MockBean
     private Map<Integer, Ingredient> ingredients;
@@ -73,15 +58,15 @@ public class IngredientControllerTest {
     public void setUp() {
         INGREDIENT.setId(INGREDIENT_ID);
         INGREDIENT.setVegan(INGREDIENT_VEGAN);
-        INGREDIENT.setProduct(INGREDIENT_PRODUCT);
+        INGREDIENT.setProducts(INGREDIENT_PRODUCT);
 
         OTHER_INGREDIENT.setId(OTHER_INGREDIENT_ID);
         OTHER_INGREDIENT.setVegan(OTHER_INGREDIENT_VEGAN);
-        OTHER_INGREDIENT.setProduct(OTHER_INGREDIENT_PRODUCT);
+        OTHER_INGREDIENT.setProducts(OTHER_INGREDIENT_PRODUCT);
 
         UPDATED_INGREDIENT.setId(INGREDIENT_ID);
         UPDATED_INGREDIENT.setVegan(UPDATED_INGREDIENT_VEGAN);
-        UPDATED_INGREDIENT.setProduct(UPDATED_INGREDIENT_PRODUCT);
+        UPDATED_INGREDIENT.setProducts(UPDATED_INGREDIENT_PRODUCT);
 
         when(ingredients.get(INGREDIENT_ID)).thenReturn(INGREDIENT);
         when(ingredients.values()).thenReturn(Lists.newArrayList(INGREDIENT));
@@ -95,11 +80,7 @@ public class IngredientControllerTest {
                 .andExpect(jsonPath("$.length()", is(1)))
                 .andExpect(jsonPath("$[0].id", is(INGREDIENT_ID)))
                 .andExpect(jsonPath("$[0].vegan", is(INGREDIENT_VEGAN)))
-                .andExpect(jsonPath("$[0].product.id", is(INGREDIENT_PRODUCT.getId())))
-                .andExpect(jsonPath("$[0].product.company.id", is(INGREDIENT_PRODUCT.getCompany().getId())))
-                .andExpect(jsonPath("$[0].product.company.vegan", is(INGREDIENT_PRODUCT.getCompany().isVegan())))
-                .andExpect(jsonPath("$[0].product.company.products.length()", is(INGREDIENT_PRODUCT.getCompany().getProducts().size())))
-                .andExpect(jsonPath("$[0].product.ingredients.length()", is(INGREDIENT_PRODUCT.getIngredients().size())));
+                .andExpect(jsonPath("$[0].products.length()", is(INGREDIENT_PRODUCT.size())));
 
         verify(ingredients).values();
     }
@@ -110,11 +91,7 @@ public class IngredientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(INGREDIENT_ID)))
                 .andExpect(jsonPath("$.vegan", is(INGREDIENT_VEGAN)))
-                .andExpect(jsonPath("$.product.id", is(INGREDIENT_PRODUCT.getId())))
-                .andExpect(jsonPath("$.product.company.id", is(INGREDIENT_PRODUCT.getCompany().getId())))
-                .andExpect(jsonPath("$.product.company.vegan", is(INGREDIENT_PRODUCT.getCompany().isVegan())))
-                .andExpect(jsonPath("$.product.company.products.length()", is(INGREDIENT_PRODUCT.getCompany().getProducts().size())))
-                .andExpect(jsonPath("$.product.ingredients.length()", is(INGREDIENT_PRODUCT.getIngredients().size())));
+                .andExpect(jsonPath("$.products.length()", is(INGREDIENT_PRODUCT.size())));
 
         verify(ingredients).get(INGREDIENT_ID);
     }
@@ -125,11 +102,7 @@ public class IngredientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(OTHER_INGREDIENT_ID)))
                 .andExpect(jsonPath("$.vegan", is(OTHER_INGREDIENT_VEGAN)))
-                .andExpect(jsonPath("$.product.id", is(OTHER_INGREDIENT_PRODUCT.getId())))
-                .andExpect(jsonPath("$.product.company.id", is(OTHER_INGREDIENT_PRODUCT.getCompany().getId())))
-                .andExpect(jsonPath("$.product.company.vegan", is(OTHER_INGREDIENT_PRODUCT.getCompany().isVegan())))
-                .andExpect(jsonPath("$.product.company.products.length()", is(OTHER_INGREDIENT_PRODUCT.getCompany().getProducts().size())))
-                .andExpect(jsonPath("$.product.ingredients.length()", is(OTHER_INGREDIENT_PRODUCT.getIngredients().size())));
+                .andExpect(jsonPath("$.products.length()", is(OTHER_INGREDIENT_PRODUCT.size())));
 
         verify(ingredients).put(OTHER_INGREDIENT_ID, OTHER_INGREDIENT);
     }
@@ -140,11 +113,7 @@ public class IngredientControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(INGREDIENT_ID)))
                 .andExpect(jsonPath("$.vegan", is(UPDATED_INGREDIENT_VEGAN)))
-                .andExpect(jsonPath("$.product.id", is(UPDATED_INGREDIENT_PRODUCT.getId())))
-                .andExpect(jsonPath("$.product.company.id", is(UPDATED_INGREDIENT_PRODUCT.getCompany().getId())))
-                .andExpect(jsonPath("$.product.company.vegan", is(UPDATED_INGREDIENT_PRODUCT.getCompany().isVegan())))
-                .andExpect(jsonPath("$.product.company.products.length()", is(UPDATED_INGREDIENT_PRODUCT.getCompany().getProducts().size())))
-                .andExpect(jsonPath("$.product.ingredients.length()", is(UPDATED_INGREDIENT_PRODUCT.getIngredients().size())));
+                .andExpect(jsonPath("$.products.length()", is(UPDATED_INGREDIENT_PRODUCT.size())));
 
         verify(ingredients).get(INGREDIENT_ID);
         assertThat(INGREDIENT).isEqualTo(UPDATED_INGREDIENT);
