@@ -1,11 +1,15 @@
 package com.upversionlab.model;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by rborcat on 1/3/2017.
  */
 public class Company {
+
     private int id;
     private Boolean vegan;
     private List<Product> products;
@@ -41,5 +45,35 @@ public class Company {
         if (newCompany.isVegan() != null) {
             setVegan(newCompany.isVegan());
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Company company = (Company) obj;
+        return Objects.equals(getId(), company.getId())
+                && Objects.equals(isVegan(), company.isVegan())
+                && Objects.equals(getProducts(), company.getProducts());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), isVegan(), getProducts());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", getId())
+                .add("vegan", isVegan())
+                .add("products", getProducts())
+                .toString();
     }
 }
