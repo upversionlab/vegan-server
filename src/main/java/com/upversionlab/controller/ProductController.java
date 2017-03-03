@@ -2,10 +2,10 @@ package com.upversionlab.controller;
 
 import com.upversionlab.exception.EntityNotFoundException;
 import com.upversionlab.model.Product;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,7 +16,12 @@ import java.util.Map;
 public class ProductController {
     private static final String PRODUCT_RESOURCE_NAME = Product.class.getSimpleName();
 
-    private Map<Integer, Product> products = new HashMap<>();
+    private final Map<Integer, Product> products;
+
+    @Autowired
+    public ProductController(Map<Integer, Product> products) {
+        this.products = products;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public Collection<Product> getProducts() {
@@ -29,15 +34,17 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void createProduct(@RequestBody Product product) {
+    public Product createProduct(@RequestBody Product product) {
         product.setId(products.size());
         products.put(product.getId(), product);
+        return product;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public void updateProducts(@PathVariable int id, @RequestBody Product newProduct) {
+    public Product updateProducts(@PathVariable int id, @RequestBody Product newProduct) {
         Product product = getProductById(id);
         product.update(newProduct);
+        return product;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
