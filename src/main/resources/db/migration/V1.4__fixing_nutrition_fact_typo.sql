@@ -1,0 +1,1 @@
+ALTER TABLE nutrition_fact RENAME COLUMN unity TO unit;
