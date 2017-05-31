@@ -3,6 +3,7 @@ package com.upversionlab.model;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "brand")
@@ -31,6 +32,9 @@ public class Brand {
     @ManyToOne(optional = false)
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
+
+    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
+    private List<Product> products;
 
     public String getName() {
         return name;
@@ -78,6 +82,14 @@ public class Brand {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
