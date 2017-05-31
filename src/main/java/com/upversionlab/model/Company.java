@@ -2,46 +2,70 @@ package com.upversionlab.model;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.List;
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity(name = "company")
 public class Company {
 
-    private int id;
-    private Boolean vegan;
-    private List<Product> products;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    public Company() {
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "logo_url")
+    private String logoUrl;
+
+    @Column(name = "animal_tests")
+    private Boolean animalTests;
+
+    @Column(name = "animal_resources")
+    private Boolean animalResources;
+
+    @Column(name = "website")
+    private String website;
+
+    public String getName() {
+        return name;
     }
 
-    public int getId() {
-        return id;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public Boolean isVegan() {
-        return vegan;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
-    public void setVegan(Boolean vegan) {
-        this.vegan = vegan;
+    public Boolean getAnimalTests() {
+        return animalTests;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public void setAnimalTests(Boolean animalTests) {
+        this.animalTests = animalTests;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public Boolean getAnimalResources() {
+        return animalResources;
     }
 
-    public void update(Company newCompany) {
-        if (newCompany.isVegan() != null) {
-            setVegan(newCompany.isVegan());
-        }
+    public void setAnimalResources(Boolean animalResources) {
+        this.animalResources = animalResources;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     @Override
@@ -54,21 +78,36 @@ public class Company {
             return false;
         }
 
-        Company company = (Company) obj;
-        return Objects.equals(getId(), company.getId())
-                && Objects.equals(isVegan(), company.isVegan());
+        Company that = (Company) obj;
+        return Objects.equals(id, that.id)
+                && Objects.equals(getName(), that.getName())
+                && Objects.equals(getLogoUrl(), that.getLogoUrl())
+                && Objects.equals(getAnimalTests(), that.getAnimalTests())
+                && Objects.equals(getAnimalResources(), that.getAnimalResources())
+                && Objects.equals(getWebsite(), that.getWebsite());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), isVegan());
+        return Objects.hash(
+                id,
+                getName(),
+                getLogoUrl(),
+                getAnimalTests(),
+                getAnimalResources(),
+                getWebsite()
+        );
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", getId())
-                .add("vegan", isVegan())
+                .add("id", id)
+                .add("name", getName())
+                .add("logoUrl", getLogoUrl())
+                .add("animalTests", getAnimalTests())
+                .add("animalResources", getAnimalResources())
+                .add("website", getWebsite())
                 .toString();
     }
 }
