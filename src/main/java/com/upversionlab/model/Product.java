@@ -40,6 +40,9 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductIngredient> productIngredients;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<NutritionFact> nutritionFacts;
+
     public String getBarcode() {
         return barcode;
     }
@@ -86,6 +89,14 @@ public class Product {
 
     public void setProductIngredients(List<ProductIngredient> productIngredients) {
         this.productIngredients = productIngredients;
+    }
+
+    public List<NutritionFact> getNutritionFacts() {
+        return nutritionFacts;
+    }
+
+    public void setNutritionFacts(List<NutritionFact> nutritionFacts) {
+        this.nutritionFacts = nutritionFacts;
     }
 
     @Override
