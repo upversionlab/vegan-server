@@ -2,45 +2,38 @@ package com.upversionlab.model;
 
 import com.google.common.base.MoreObjects;
 
-import java.util.List;
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity(name = "ingredient")
 public class Ingredient {
 
-    private int id;
-    private Boolean vegan;
-    private List<Product> products;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    public Ingredient() {}
+    @Column(name = "name")
+    private String name;
 
-    public int getId() {
-        return id;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "vegan_flags_id", referencedColumnName = "id")
+    private VeganFlags veganFlags;
+
+    public String getName() {
+        return name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Boolean isVegan() {
-        return vegan;
+    public VeganFlags getVeganFlags() {
+        return veganFlags;
     }
 
-    public void setVegan(Boolean vegan) {
-        this.vegan = vegan;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
-    public void update(Ingredient newIngredient) {
-        if (newIngredient.isVegan() != null) {
-            setVegan(newIngredient.isVegan());
-        }
+    public void setVeganFlags(VeganFlags veganFlags) {
+        this.veganFlags = veganFlags;
     }
 
     @Override
@@ -53,21 +46,27 @@ public class Ingredient {
             return false;
         }
 
-        Ingredient ingredient = (Ingredient) obj;
-        return Objects.equals(getId(), ingredient.getId())
-                && Objects.equals(isVegan(), ingredient.isVegan());
+        Ingredient that = (Ingredient) obj;
+        return Objects.equals(id, that.id)
+                && Objects.equals(getName(), that.getName())
+                && Objects.equals(getVeganFlags(), that.getVeganFlags());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), isVegan());
+        return Objects.hash(
+                id,
+                getName(),
+                getVeganFlags()
+        );
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("id", getId())
-                .add("vegan", isVegan())
+                .add("id", id)
+                .add("name", getName())
+                .add("veganFlags", getVeganFlags())
                 .toString();
     }
 }
