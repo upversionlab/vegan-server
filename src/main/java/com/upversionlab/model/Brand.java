@@ -3,11 +3,10 @@ package com.upversionlab.model;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "company")
-public class Company {
+@Entity(name = "brand")
+public class Brand {
 
     @Id
     @Column(name = "id")
@@ -29,8 +28,9 @@ public class Company {
     @Column(name = "website")
     private String website;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    private List<Brand> brands;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    private Company company;
 
     public String getName() {
         return name;
@@ -72,12 +72,12 @@ public class Company {
         this.website = website;
     }
 
-    public List<Brand> getBrands() {
-        return brands;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setBrands(List<Brand> brands) {
-        this.brands = brands;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
     @Override
@@ -90,13 +90,14 @@ public class Company {
             return false;
         }
 
-        Company that = (Company) obj;
+        Brand that = (Brand) obj;
         return Objects.equals(id, that.id)
                 && Objects.equals(getName(), that.getName())
                 && Objects.equals(getLogoUrl(), that.getLogoUrl())
                 && Objects.equals(getAnimalTests(), that.getAnimalTests())
                 && Objects.equals(getAnimalResources(), that.getAnimalResources())
-                && Objects.equals(getWebsite(), that.getWebsite());
+                && Objects.equals(getWebsite(), that.getWebsite())
+                && Objects.equals(getCompany(), that.getCompany());
     }
 
     @Override
@@ -107,7 +108,8 @@ public class Company {
                 getLogoUrl(),
                 getAnimalTests(),
                 getAnimalResources(),
-                getWebsite()
+                getWebsite(),
+                getCompany()
         );
     }
 
@@ -120,6 +122,7 @@ public class Company {
                 .add("animalTests", getAnimalTests())
                 .add("animalResources", getAnimalResources())
                 .add("website", getWebsite())
+                .add("company", getCompany())
                 .toString();
     }
 }
