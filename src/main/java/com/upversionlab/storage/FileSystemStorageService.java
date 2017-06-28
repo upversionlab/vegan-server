@@ -9,30 +9,34 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 @Service
 public class FileSystemStorageService {
+    static final String BARCODE_FILENAME = "barcode.jpg";
+    static final String LOGO_FILENAME = "logo.jpg";
+    static final String INGREDIENT_LIST_FILENAME = "ingredientList.jpg";
+    static final String NUTRICTIONAL_FACTS_FILENAME = "nutrictionalFacts.jpg";
 
     private final String storageLocation;
+    private final Calendar calendar;
 
     @Autowired
-    public FileSystemStorageService(String storageLocation) {
+    public FileSystemStorageService(String storageLocation, Calendar calendar) {
         this.storageLocation = storageLocation;
+        this.calendar = calendar;
     }
 
     public void storeAndroid(MultipartFile barcodeFile, MultipartFile logo, MultipartFile ingredientList, MultipartFile nutritionalFacts) {
         Path rootLocation = createFolders();
-        doStore(rootLocation, barcodeFile, "barcode.jpg");
-        doStore(rootLocation, logo, "logo.jpg");
-        doStore(rootLocation, ingredientList, "ingredientList.jpg");
-        doStore(rootLocation, nutritionalFacts, "nutrictionalFacts.jpg");
+        doStore(rootLocation, barcodeFile, BARCODE_FILENAME);
+        doStore(rootLocation, logo, LOGO_FILENAME);
+        doStore(rootLocation, ingredientList, INGREDIENT_LIST_FILENAME);
+        doStore(rootLocation, nutritionalFacts, NUTRICTIONAL_FACTS_FILENAME);
     }
 
-    private Path createFolders() {
-        Long now = Calendar.getInstance().getTimeInMillis();
+    Path createFolders() {
+        Long now = calendar.getTimeInMillis();
         Path rootLocation = Paths.get(storageLocation, now.toString());
         try {
             Files.createDirectories(rootLocation);
@@ -42,7 +46,7 @@ public class FileSystemStorageService {
         return rootLocation;
     }
 
-    private void doStore(Path rootLocation, MultipartFile file, String filename) {
+    void doStore(Path rootLocation, MultipartFile file, String filename) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
