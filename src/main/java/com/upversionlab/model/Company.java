@@ -32,6 +32,14 @@ public class Company {
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Brand> brands;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "company_certification",
+            joinColumns = @JoinColumn(name = "company_id"),
+            inverseJoinColumns = @JoinColumn(name = "certification_id")
+    )
+    private List<Certification> certifications;
+
     public String getName() {
         return name;
     }
@@ -78,6 +86,14 @@ public class Company {
 
     public void setBrands(List<Brand> brands) {
         this.brands = brands;
+    }
+
+    public List<Certification> getCertifications() {
+        return certifications;
+    }
+
+    public void setCertifications(List<Certification> certifications) {
+        this.certifications = certifications;
     }
 
     @Override

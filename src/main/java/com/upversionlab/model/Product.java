@@ -43,6 +43,14 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<NutritionFact> nutritionFacts;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_certification",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "certification_id")
+    )
+    private List<Certification> certifications;
+
     public String getBarcode() {
         return barcode;
     }
@@ -97,6 +105,14 @@ public class Product {
 
     public void setNutritionFacts(List<NutritionFact> nutritionFacts) {
         this.nutritionFacts = nutritionFacts;
+    }
+
+    public List<Certification> getCertifications() {
+        return certifications;
+    }
+
+    public void setCertifications(List<Certification> certifications) {
+        this.certifications = certifications;
     }
 
     @Override
