@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
-/**
- * Created by rborcat on 12/6/2016.
- */
 @RestController
 public class PingController {
 

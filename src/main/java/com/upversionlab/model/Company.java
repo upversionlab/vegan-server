@@ -5,9 +5,6 @@ import com.google.common.base.MoreObjects;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Created by rborcat on 1/3/2017.
- */
 public class Company {
 
     private int id;

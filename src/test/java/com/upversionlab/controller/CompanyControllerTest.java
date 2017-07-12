@@ -26,9 +26,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/**
- * Created by vruzeda on 14/02/17.
- */
 @RunWith(SpringRunner.class)
 @WebMvcTest(CompanyController.class)
 public class CompanyControllerTest {
