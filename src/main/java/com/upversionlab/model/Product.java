@@ -45,6 +45,14 @@ public class Product {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
             name = "product_certification",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "certification_id")
@@ -105,6 +113,14 @@ public class Product {
 
     public void setNutritionFacts(List<NutritionFact> nutritionFacts) {
         this.nutritionFacts = nutritionFacts;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public List<Certification> getCertifications() {
