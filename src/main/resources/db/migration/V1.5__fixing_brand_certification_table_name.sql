@@ -1,0 +1,1 @@
+ALTER TABLE BrandCertification RENAME TO brand_certification;

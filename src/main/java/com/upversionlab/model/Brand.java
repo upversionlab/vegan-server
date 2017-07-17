@@ -6,8 +6,8 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "company")
-public class Company {
+@Entity(name = "brand")
+public class Brand {
 
     @Id
     @Column(name = "id")
@@ -29,13 +29,17 @@ public class Company {
     @Column(name = "website")
     private String website;
 
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
-    private List<Brand> brands;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
+    private Company company;
+
+    @OneToMany(mappedBy = "brand", fetch = FetchType.LAZY)
+    private List<Product> products;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "company_certification",
-            joinColumns = @JoinColumn(name = "company_id"),
+            name = "brand_certification",
+            joinColumns = @JoinColumn(name = "brand_id"),
             inverseJoinColumns = @JoinColumn(name = "certification_id")
     )
     private List<Certification> certifications;
@@ -80,12 +84,20 @@ public class Company {
         this.website = website;
     }
 
-    public List<Brand> getBrands() {
-        return brands;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setBrands(List<Brand> brands) {
-        this.brands = brands;
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     public List<Certification> getCertifications() {
@@ -106,13 +118,14 @@ public class Company {
             return false;
         }
 
-        Company that = (Company) obj;
+        Brand that = (Brand) obj;
         return Objects.equals(id, that.id)
                 && Objects.equals(getName(), that.getName())
                 && Objects.equals(getLogoUrl(), that.getLogoUrl())
                 && Objects.equals(getAnimalTests(), that.getAnimalTests())
                 && Objects.equals(getAnimalResources(), that.getAnimalResources())
-                && Objects.equals(getWebsite(), that.getWebsite());
+                && Objects.equals(getWebsite(), that.getWebsite())
+                && Objects.equals(getCompany(), that.getCompany());
     }
 
     @Override
@@ -123,7 +136,8 @@ public class Company {
                 getLogoUrl(),
                 getAnimalTests(),
                 getAnimalResources(),
-                getWebsite()
+                getWebsite(),
+                getCompany()
         );
     }
 
@@ -136,6 +150,7 @@ public class Company {
                 .add("animalTests", getAnimalTests())
                 .add("animalResources", getAnimalResources())
                 .add("website", getWebsite())
+                .add("company", getCompany())
                 .toString();
     }
 }

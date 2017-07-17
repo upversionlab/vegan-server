@@ -3,33 +3,42 @@ package com.upversionlab.model;
 import com.google.common.base.MoreObjects;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "ingredient")
-public class Ingredient {
+@Entity(name = "product_ingredient")
+public class ProductIngredient {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ingredient_id", referencedColumnName = "id")
+    private Ingredient ingredient;
+
+    @OneToOne
     @JoinColumn(name = "vegan_flags_id", referencedColumnName = "id")
     private VeganFlags veganFlags;
 
-    @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
-    private List<ProductIngredient> productIngredients;
-
-    public String getName() {
-        return name;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Ingredient getIngredient() {
+        return ingredient;
+    }
+
+    public void setIngredient(Ingredient ingredient) {
+        this.ingredient = ingredient;
     }
 
     public VeganFlags getVeganFlags() {
@@ -38,14 +47,6 @@ public class Ingredient {
 
     public void setVeganFlags(VeganFlags veganFlags) {
         this.veganFlags = veganFlags;
-    }
-
-    public List<ProductIngredient> getProductIngredients() {
-        return productIngredients;
-    }
-
-    public void setProductIngredients(List<ProductIngredient> productIngredients) {
-        this.productIngredients = productIngredients;
     }
 
     @Override
@@ -58,9 +59,10 @@ public class Ingredient {
             return false;
         }
 
-        Ingredient that = (Ingredient) obj;
+        ProductIngredient that = (ProductIngredient) obj;
         return Objects.equals(id, that.id)
-                && Objects.equals(getName(), that.getName())
+                && Objects.equals(getProduct(), that.getProduct())
+                && Objects.equals(getIngredient(), that.getIngredient())
                 && Objects.equals(getVeganFlags(), that.getVeganFlags());
     }
 
@@ -68,7 +70,8 @@ public class Ingredient {
     public int hashCode() {
         return Objects.hash(
                 id,
-                getName(),
+                getProduct(),
+                getIngredient(),
                 getVeganFlags()
         );
     }
@@ -77,7 +80,8 @@ public class Ingredient {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("id", id)
-                .add("name", getName())
+                .add("product", getProduct())
+                .add("ingredient", getIngredient())
                 .add("veganFlags", getVeganFlags())
                 .toString();
     }
