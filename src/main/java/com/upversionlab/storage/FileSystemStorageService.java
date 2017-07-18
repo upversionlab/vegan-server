@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Calendar;
 
 @Service
 public class FileSystemStorageService {
@@ -19,29 +18,27 @@ public class FileSystemStorageService {
     static final String NUTRICTIONAL_FACTS_FILENAME = "nutrictionalFacts.jpg";
 
     private final String storageLocation;
-    private final Calendar calendar;
 
     @Autowired
-    public FileSystemStorageService(String storageLocation, Calendar calendar) {
+    public FileSystemStorageService(String storageLocation) {
         this.storageLocation = storageLocation;
-        this.calendar = calendar;
     }
 
-    public void storeAndroid(MultipartFile barcodeFile, MultipartFile logo, MultipartFile ingredientList, MultipartFile nutritionalFacts) {
-        Path rootLocation = createFolders();
+    public void storeAndroid(String uploadDate, Long id, MultipartFile barcodeFile, MultipartFile logo, MultipartFile ingredientList, MultipartFile nutritionalFacts) {
+        Path rootLocation = createFolders(uploadDate, id);
         doStore(rootLocation, barcodeFile, BARCODE_FILENAME);
         doStore(rootLocation, logo, LOGO_FILENAME);
         doStore(rootLocation, ingredientList, INGREDIENT_LIST_FILENAME);
         doStore(rootLocation, nutritionalFacts, NUTRICTIONAL_FACTS_FILENAME);
     }
 
-    Path createFolders() {
-        Long now = calendar.getTimeInMillis();
-        Path rootLocation = Paths.get(storageLocation, now.toString());
+    Path createFolders(String uploadDate, Long id) {
+        String folderName = uploadDate + "_" + id.toString();
+        Path rootLocation = Paths.get(storageLocation, folderName);
         try {
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
-            throw new StorageException("Could not create the storage: " + storageLocation + "/" + now.toString(), e);
+            throw new StorageException("Could not create the storage: " + storageLocation + "/" + folderName, e);
         }
         return rootLocation;
     }

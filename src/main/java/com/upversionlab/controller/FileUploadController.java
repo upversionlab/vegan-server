@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,13 +22,15 @@ public class FileUploadController {
         this.fileSystemStorageService = fileSystemStorageService;
     }
 
-    @PostMapping("/uploadAndroid")
-    public ResponseEntity handleFileUploadAndroid(@RequestParam MultipartFile barcodeFile,
-                                                  @RequestParam MultipartFile logo,
-                                                  @RequestParam MultipartFile ingredientList,
-                                                  @RequestParam MultipartFile nutritionalFacts) {
+    @PostMapping("/uploadAndroid/{uploadDate}/{id}")
+    public ResponseEntity handleFileUploadAndroid(@PathVariable String uploadDate,
+            @PathVariable Long id,
+            @RequestParam MultipartFile barcodeFile,
+            @RequestParam MultipartFile logo,
+            @RequestParam MultipartFile ingredientList,
+            @RequestParam MultipartFile nutritionalFacts) {
 
-        fileSystemStorageService.storeAndroid(barcodeFile, logo, ingredientList, nutritionalFacts);
+        fileSystemStorageService.storeAndroid(uploadDate, id, barcodeFile, logo, ingredientList, nutritionalFacts);
         return ResponseEntity.ok().build();
     }
 

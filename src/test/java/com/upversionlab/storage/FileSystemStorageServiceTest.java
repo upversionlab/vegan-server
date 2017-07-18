@@ -25,7 +25,9 @@ public class FileSystemStorageServiceTest {
     private static final String STORAGE_LOCATION = "storage_location";
     private static final String ORIGINAL_FILENAME = "original_filename";
     private static final String FILENAME = "filename";
-    private static final Long NOW = 0L;
+    private static final String UPLOAD_DATE = "UPLOAD_DATE";
+    private static final Long ID = 1L;
+    private static final String FOLDER_NAME = UPLOAD_DATE + "_" + ID;
 
     private FileSystemStorageService fileSystemStorageService;
     private Path rootLocation;
@@ -35,9 +37,6 @@ public class FileSystemStorageServiceTest {
 
     @Before
     public void setUp() throws IOException {
-        Calendar calendar = mock(Calendar.class);
-        when(calendar.getTimeInMillis()).thenReturn(NOW);
-
         rootLocation = mock(Path.class);
         resolvedPath = mock(Path.class);
         when(rootLocation.resolve(FILENAME)).thenReturn(resolvedPath);
@@ -47,7 +46,7 @@ public class FileSystemStorageServiceTest {
         when(rootLocation.resolve(FileSystemStorageService.NUTRICTIONAL_FACTS_FILENAME)).thenReturn(resolvedPath);
 
         PowerMockito.mockStatic(Paths.class);
-        when(Paths.get(STORAGE_LOCATION, NOW.toString())).thenReturn(rootLocation);
+        when(Paths.get(STORAGE_LOCATION, FOLDER_NAME)).thenReturn(rootLocation);
 
         multiPartFile = mock(MultipartFile.class);
         when(multiPartFile.isEmpty()).thenReturn(false);
@@ -60,12 +59,12 @@ public class FileSystemStorageServiceTest {
         when(Files.createDirectories(rootLocation)).thenReturn(null);
         when(Files.copy(inputStream, resolvedPath)).thenReturn(0L);
 
-        fileSystemStorageService = new FileSystemStorageService(STORAGE_LOCATION, calendar);
+        fileSystemStorageService = new FileSystemStorageService(STORAGE_LOCATION);
     }
 
     @Test
     public void testStoreAndroid() throws IOException {
-        fileSystemStorageService.storeAndroid(multiPartFile, multiPartFile, multiPartFile, multiPartFile);
+        fileSystemStorageService.storeAndroid(UPLOAD_DATE, ID, multiPartFile, multiPartFile, multiPartFile, multiPartFile);
 
         verify(rootLocation).resolve(FileSystemStorageService.BARCODE_FILENAME);
         verify(rootLocation).resolve(FileSystemStorageService.LOGO_FILENAME);
@@ -78,10 +77,10 @@ public class FileSystemStorageServiceTest {
 
     @Test
     public void testCreateFolder() throws IOException {
-        Path result = fileSystemStorageService.createFolders();
+        Path result = fileSystemStorageService.createFolders(UPLOAD_DATE, ID);
 
         PowerMockito.verifyStatic();
-        Paths.get(STORAGE_LOCATION, NOW.toString());
+        Paths.get(STORAGE_LOCATION, FOLDER_NAME);
 
         PowerMockito.verifyStatic();
         Files.createDirectories(rootLocation);
@@ -93,7 +92,7 @@ public class FileSystemStorageServiceTest {
     public void testCreateFolderWithIOException() throws IOException {
         when(Files.createDirectories(rootLocation)).thenThrow(new IOException());
 
-        fileSystemStorageService.createFolders();
+        fileSystemStorageService.createFolders(UPLOAD_DATE, ID);
     }
 
     @Test

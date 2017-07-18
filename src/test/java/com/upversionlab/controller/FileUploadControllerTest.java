@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(FileUploadController.class)
 public class FileUploadControllerTest {
 
+    private static final String UPLOAD_DATE = "UPLOAD_DATE";
+    private static final Long ID = 1L;
+
     private MockMultipartFile barcodeFile;
     private MockMultipartFile logo;
     private MockMultipartFile ingredientList;
@@ -46,7 +49,7 @@ public class FileUploadControllerTest {
 
     @Test
     public void testUpdateIngredient() throws Exception {
-        mvc.perform(fileUpload("/uploadAndroid/")
+        mvc.perform(fileUpload("/uploadAndroid/" + UPLOAD_DATE + "/" + ID)
                 .file(barcodeFile)
                 .file(logo)
                 .file(ingredientList)
@@ -57,9 +60,9 @@ public class FileUploadControllerTest {
 
     @Test
     public void testUpdateIngredientException() throws Exception {
-        doThrow(new StorageFileNotFoundException("Exception")).when(fileSystemStorageService).storeAndroid(barcodeFile, logo, ingredientList, nutritionalFacts);
+        doThrow(new StorageFileNotFoundException("Exception")).when(fileSystemStorageService).storeAndroid(UPLOAD_DATE, ID, barcodeFile, logo, ingredientList, nutritionalFacts);
 
-        mvc.perform(fileUpload("/uploadAndroid/")
+        mvc.perform(fileUpload("/uploadAndroid/" + UPLOAD_DATE + "/" + ID)
                 .file(barcodeFile)
                 .file(logo)
                 .file(ingredientList)
@@ -73,11 +76,6 @@ public class FileUploadControllerTest {
 
         @Bean
         public String storageLocation() { return "location"; };
-
-        @Bean
-        public Calendar calendar() {
-            return Calendar.getInstance();
-        }
     }
 
 }
