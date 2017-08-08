@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 
-@RestController("/pendingProducts")
+@RestController
 public class PendingProductController {
 
     private final PendingProductRepository pendingProductRepository;
@@ -19,23 +19,23 @@ public class PendingProductController {
         this.calendar = calendar;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(path = "/pendingProducts")
     public Iterable<PendingProduct> getPendingProducts() {
         return pendingProductRepository.findAll();
     }
 
-    @RequestMapping(path = "/{uploadDate}/{id}", method = RequestMethod.GET)
+    @GetMapping(path = "/pendingProducts/{uploadDate}/{id}")
     public PendingProduct getPendingProduct(@PathVariable String uploadDate, @PathVariable Long id) {
         return pendingProductRepository.findByIdAndUploadDate(id, uploadDate);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping(path = "/pendingProducts")
     public PendingProduct createPendingProduct(@RequestBody PendingProduct pendingProduct) {
         pendingProduct.setUploadDate(Long.toString(calendar.getTimeInMillis()));
         return pendingProductRepository.save(pendingProduct);
     }
 
-    @RequestMapping(path = "/{uploadDate}/{id}", method = RequestMethod.DELETE)
+    @DeleteMapping(path = "/pendingProducts/{uploadDate}/{id}")
     public void deletePendingProduct(@PathVariable String uploadDate, @PathVariable Long id) {
         pendingProductRepository.deleteByIdAndUploadDate(id, uploadDate);
     }
