@@ -1,6 +1,8 @@
 package com.upversionlab.controller;
 
 import com.upversionlab.exception.StorageFileNotFoundException;
+import com.upversionlab.model.PendingProduct;
+import com.upversionlab.repository.PendingProductRepository;
 import com.upversionlab.storage.FileSystemStorageService;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Calendar;
 
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +39,9 @@ public class FileUploadControllerTest {
     @MockBean
     private FileSystemStorageService fileSystemStorageService;
 
+    @MockBean
+    private PendingProductRepository pendingProductRepository;
+
     @Autowired
     private MockMvc mvc;
 
@@ -48,7 +54,8 @@ public class FileUploadControllerTest {
     }
 
     @Test
-    public void testUpdateIngredient() throws Exception {
+    public void testExistentUpdateIngredient() throws Exception {
+        when(pendingProductRepository.findByIdAndUploadDate(ID, UPLOAD_DATE)).thenReturn(new PendingProduct());
         mvc.perform(fileUpload("/uploadAndroid/" + UPLOAD_DATE + "/" + ID)
                 .file(barcodeFile)
                 .file(logo)
@@ -59,7 +66,19 @@ public class FileUploadControllerTest {
     }
 
     @Test
+    public void testNonExistentUpdateIngredient() throws Exception {
+        mvc.perform(fileUpload("/uploadAndroid/" + UPLOAD_DATE + "/" + ID)
+                .file(barcodeFile)
+                .file(logo)
+                .file(ingredientList)
+                .file(nutritionalFacts)
+                .param("some-random", "4"))
+                .andExpect(status().is(HttpStatus.NOT_FOUND.value()));
+    }
+
+    @Test
     public void testUpdateIngredientException() throws Exception {
+        when(pendingProductRepository.findByIdAndUploadDate(ID, UPLOAD_DATE)).thenReturn(new PendingProduct());
         doThrow(new StorageFileNotFoundException("Exception")).when(fileSystemStorageService).storeAndroid(UPLOAD_DATE, ID, barcodeFile, logo, ingredientList, nutritionalFacts);
 
         mvc.perform(fileUpload("/uploadAndroid/" + UPLOAD_DATE + "/" + ID)

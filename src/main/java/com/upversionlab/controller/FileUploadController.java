@@ -1,6 +1,8 @@
 package com.upversionlab.controller;
 
 import com.upversionlab.exception.StorageFileNotFoundException;
+import com.upversionlab.model.PendingProduct;
+import com.upversionlab.repository.PendingProductRepository;
 import com.upversionlab.storage.FileSystemStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
 
     private final FileSystemStorageService fileSystemStorageService;
+    private final PendingProductRepository pendingProductRepository;
 
     @Autowired
-    public FileUploadController(FileSystemStorageService fileSystemStorageService) {
+    public FileUploadController(FileSystemStorageService fileSystemStorageService, PendingProductRepository pendingProductRepository) {
         this.fileSystemStorageService = fileSystemStorageService;
+        this.pendingProductRepository = pendingProductRepository;
     }
 
     @PostMapping("/uploadAndroid/{uploadDate}/{id}")
@@ -30,6 +34,10 @@ public class FileUploadController {
             @RequestParam MultipartFile ingredientList,
             @RequestParam MultipartFile nutritionalFacts) {
 
+        PendingProduct pendingProduct = pendingProductRepository.findByIdAndUploadDate(id, uploadDate);
+        if (pendingProduct == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
         fileSystemStorageService.storeAndroid(uploadDate, id, barcodeFile, logo, ingredientList, nutritionalFacts);
         return ResponseEntity.ok().build();
     }
